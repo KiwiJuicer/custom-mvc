@@ -23,6 +23,13 @@ class Application
     private $route;
 
     /**
+     * Parameters
+     *
+     * @var array
+     */
+    private $params = [];
+
+    /**
      * Application Constructor
      *
      * @param array $applicationConfig
@@ -65,9 +72,8 @@ class Application
         include __DIR__ . '/../' . str_replace('\\', '/', $this->route->getController()) . '.php';
 
         $controllerString = '\\' . $this->route->getController();
-        $controller = new $controllerString($this->route);
 
-        $controller->{$this->route->getAction() . 'Action'}();
+        (new $controllerString($this->route, $this->params))->{$this->route->getAction() . 'Action'}();
     }
 
     /**
@@ -77,11 +83,35 @@ class Application
      */
     protected function getRequestedRoute() : array
     {
-        $requestedPath = $_SERVER['REQUEST_URI'];
+        preg_match_all('/(\d+)/', $_SERVER['REQUEST_URI'], $matches);
+        $paramValues = (isset($matches[1])) ? $matches[1] : null;
+        $slices = explode('/', $_SERVER['REQUEST_URI']);
 
-        foreach ($this->routesConfig as $name => $routeEntry) {
+        $matchUri = $_SERVER['REQUEST_URI'];
 
-            if ($requestedPath === $routeEntry['path']) {
+        foreach ($this->routesConfig as $routeEntry) {
+
+            if (false !== $pos = strpos($routeEntry['path'], ':')) {
+
+                $subString = substr($routeEntry['path'], $pos);
+                $paramNames = explode('/', $subString);
+
+                foreach ($slices as &$slice) {
+
+                    foreach ($paramValues as $index => $param) {
+
+                        if ($param === $slice) {
+                            $this->params[substr($paramNames[$index], 1)] = $slice;
+                            $slice = $paramNames[$index];
+                            break;
+                        }
+                    }
+                }
+
+                $matchUri = implode('/', $slices);
+            }
+
+            if ($matchUri === $routeEntry['path']) {
                 return $routeEntry;
             }
 

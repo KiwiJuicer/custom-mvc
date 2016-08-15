@@ -18,16 +18,24 @@ class AbstractController {
      *
      * @var \Mvc\View
      */
-    public $view;
+    protected $view;
+
+    /**
+     * Route parameters
+     *
+     * @var array
+     */
+    protected $params;
 
     /**
      * Abstract Controller Constructor
      *
      * @param \Mvc\Route $route
      */
-    public function __construct(Route $route)
+    public function __construct(Route $route, array $params)
     {
         $this->view = new View($route);
+        $this->params = $params;
     }
 
     /**

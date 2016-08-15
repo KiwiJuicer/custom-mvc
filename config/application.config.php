@@ -7,6 +7,12 @@ return [
             'controller' => \Controller\IndexController::class,
             'action' => 'index'
         ],
+        'index' => [
+            'name' => 'objects',
+            'path' => '/objects/:id/:count',
+            'controller' => \Controller\IndexController::class,
+            'action' => 'objects'
+        ],
         'notFound' => [
             'name' => 'notFound',
             'path' => '/404',

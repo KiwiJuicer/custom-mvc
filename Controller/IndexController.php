@@ -23,4 +23,21 @@ class IndexController extends AbstractController
         ];
         $this->view->show();
     }
+
+    /**
+     * Objects View Action
+     */
+    public function objectsAction()
+    {
+        echo '<pre>'; print_r($this->params); echo '</pre>';
+        $this->view->title = 'Objects';
+        $objects = [
+            'Apples',
+            'Tomatoes',
+            'Dogs'
+        ];
+        $this->view->count = (int)$this->params['count'];
+        $this->view->object = $objects[(int)$this->params['id']];
+        $this->view->show();
+    }
 }
