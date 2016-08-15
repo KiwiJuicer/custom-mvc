@@ -7,7 +7,7 @@ return [
             'controller' => \Controller\IndexController::class,
             'action' => 'index'
         ],
-        'index' => [
+        'objects' => [
             'name' => 'objects',
             'path' => '/objects/:id/:count',
             'controller' => \Controller\IndexController::class,
